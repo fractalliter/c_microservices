@@ -9,8 +9,5 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
-c_service/deps/*
 .idea
 cmake-build-debug
-env
-*pycache*
