@@ -9,6 +9,7 @@
 #include <string.h>
 #include "libs/database.h"
 #include <assert.h>
+#include <ctype.h>
 #include "libs/config.h"
 
 int main(int argc, char** argv)
@@ -29,9 +30,22 @@ int main(int argc, char** argv)
         int LEN = 50;
         char buffer[LEN];
         zmq_recv (responder, buffer, LEN, 0);
-
-        value = json_parse((json_char*)buffer, LEN);
-
+        int i = 0;
+        while (i <= LEN+1) {
+            if(buffer[i] == '}') {
+                buffer[i+1] = '\0';
+                LEN = i+1;
+                break;
+            }
+            i+=1;
+        }
+        char json[LEN];
+        int j = 0;
+        while (j<=LEN) {
+            json[j] = buffer[j];
+            j+=1;
+        }
+        value = json_parse((json_char*)json, LEN);
         if (value == NULL) {
             const char *error = "{\"error\":\"Unable to parse data\"}";
             zmq_send (responder, error, strlen(error), 0);
