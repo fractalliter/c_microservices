@@ -13,4 +13,5 @@ transaction_service/deps/*
 .idea
 cmake-build-debug
 env
+.env
 *pycache*

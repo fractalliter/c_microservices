@@ -1,7 +1,10 @@
 import zmq
-import json
+from os import getenv
 from flask import Flask, request
 
+port = getenv('TRANSACTION_SERVICE_PORT', '5555')
+host = getenv('TRANSACTION_SERVICE_HOST', 'localhost')
+url = 'tcp://{}:{}'.format(host, port)
 app = Flask(__name__)
 
 context = zmq.Context()
@@ -9,7 +12,7 @@ context = zmq.Context()
 #  Socket to talk to server
 print("Connecting to hello world server…")
 socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+socket.connect(url)
 
 
 @app.route("/", methods=['POST'])
