@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <zmq.h>
-#include <json-parser/json.h>
+#include <json.h>
 #include <string.h>
 #include "libs/database.h"
 #include <assert.h>
@@ -16,6 +16,12 @@ int main(int argc, char** argv)
 {
     json_value* value;
     Config config = parse_args(argc, argv);
+    const char *port = getenv("TRANSACTION_SERVICE_PORT");
+    if(port != NULL)
+        config.port = atoi(port);
+    const char *host = getenv("TRANSACTION_SERVICE_HOST");
+    if (host != NULL)
+        config.host = host;
     PGconn *conn = getConnection();
     const char *address = get_address(config);
 
