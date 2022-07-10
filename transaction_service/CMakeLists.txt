@@ -11,7 +11,7 @@ target_link_libraries(transaction_service PUBLIC m pq jsonparser zmq)
 # so that we will find TutorialConfig.h
 target_include_directories(transaction_service PUBLIC
         "${PROJECT_BINARY_DIR}"
-        "/usr/local/include/json-parser")
+        "/usr/local/include/json-parser/")
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

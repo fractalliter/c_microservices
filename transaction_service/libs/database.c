@@ -4,8 +4,41 @@
 
 #include <stdlib.h>
 #include "database.h"
+#include <stdio.h>
+
+typedef struct {
+    int port;
+    const char *host;
+    const char *user;
+    const char *password;
+    const char *dbname;
+} Config;
+
 PGconn *getConnection() {
-    PGconn *conn = PQconnectdb("user=postgres password=postgres dbname=test host=localhost port=5432");
+    Config config;
+    config.port = 5432;
+    config.host = "localhost";
+    config.user = "postgres";
+    config.password = "postgres";
+    config.dbname = "postgres";
+    const char *port = getenv("DB_PORT");
+    if(port != NULL)
+        config.port = atoi(port);
+    const char *host = getenv("DB_HOST");
+    if (host != NULL)
+        config.host = host;
+    const char *user = getenv("DB_USER");
+    if (user != NULL)
+        config.user = user;
+    const char *password = getenv("DB_PASSWORD");
+    if (password != NULL)
+        config.password = password;
+    const char *dbname = getenv("DB_NAME");
+    if (dbname != NULL)
+        config.dbname = dbname;
+    char *conn_str = malloc(sizeof(char) * 200);
+    sprintf(conn_str, "host=%s port=%d user=%s password=%s dbname=%s", config.host, config.port, config.user, config.password, config.dbname);
+    PGconn *conn = PQconnectdb(conn_str);
 
     if (PQstatus(conn) == CONNECTION_BAD) {
         fprintf(stderr, "Connection to database failed: %s\n",

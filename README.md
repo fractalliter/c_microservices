@@ -28,3 +28,16 @@ for coming messages.
 The transaction service making a connection to **PostgreSQL** server, in this case _test_ database. Transaction service
 is receiving a message from ZeroMQ and then commence a transactional query on the account table of test database. 
 If user doesn't own sufficient fund the transaction will `rollback`.
+
+### How to run
+
+Rename `.env.example` to `.env` then run 
+
+```bash
+docker-compose up
+```
+and then send a request
+
+```bash
+curl -X POST localhost:5000 -d '{"user":"3","amount":"4"}'
+```

@@ -10,7 +10,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 	cmake \
 	libczmq-dev \
 	postgresql \
-	libpq-dev
+	libpq-dev \
+	git
 
 WORKDIR /app
 
@@ -19,6 +20,9 @@ COPY . .
 USER root:root
 
 RUN chmod +x ./install-deps.sh
+RUN apt-get install ca-certificates -y
 RUN ./install-deps.sh
-
-CMD [ "./build/transaction_service" ]
+WORKDIR /app/build
+RUN chmod +x ./transaction_service
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/usr/local/lib/json-parser
+CMD [ "./transaction_service" ]

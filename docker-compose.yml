@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     environment:
       TRANSACTION_SERVICE_PORT: ${TRANSACTION_SERVICE_PORT}
-      TRANSACTION_SERVICE_HOST: ${TRANSACTION_SERVICE_HOST}
+      TRANSACTION_SERVICE_HOST: "*"
       DB_PORT: ${DB_PORT}
       DB_HOST: ${DB_HOST}
       DB_USER: ${POSTGRES_USER}
