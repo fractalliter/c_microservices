@@ -19,4 +19,7 @@ echo "[make] build binary"
 cd build
 make
 echo "[make] build binary successful"
+
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/usr/local/lib/json-parser
+cd -
+psql -h localhost -U postgres -d test -a -f schema.sql
