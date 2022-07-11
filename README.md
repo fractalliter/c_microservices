@@ -36,8 +36,8 @@ Rename `.env.example` to `.env` then run
 ```bash
 docker-compose up
 ```
-and then send a request
+and then send a request with `enum direction{in,out}`
 
 ```bash
-curl -X POST localhost:5000 -d '{"user":"3","amount":"4"}'
+curl -X POST localhost:5000 -d '{"user":"3","amount":"10","direction":"out"}'
 ```
