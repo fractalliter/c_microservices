@@ -9,7 +9,7 @@ typedef struct {
     const char *host;
 } Config;
 
-Config parse_args(int, char **);
+Config server_env_vars();
 
 const char* get_address(Config);
 

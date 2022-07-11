@@ -1,9 +1,19 @@
 //
 // Created by elias on 7/8/22.
 //
-#include <postgresql/libpq-fe.h>
 #ifndef C_MICROSERVICES_DATABASE_H
 #define C_MICROSERVICES_DATABASE_H
+#include <postgresql/libpq-fe.h>
+
+typedef struct {
+    int port;
+    const char *host;
+    const char *user;
+    const char *password;
+    const char *dbname;
+} DBConfig;
+
+DBConfig db_env_vars();
 
 PGconn *getConnection();
 

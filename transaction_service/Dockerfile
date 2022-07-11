@@ -19,9 +19,9 @@ COPY . .
 
 USER root:root
 
-RUN chmod +x ./install-deps.sh
+RUN chmod +x ./install-libs.sh
 RUN apt-get install ca-certificates -y
-RUN ./install-deps.sh
+RUN ./install-libs.sh
 WORKDIR /app/build
 RUN chmod +x ./transaction_service
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/usr/local/lib/json-parser
