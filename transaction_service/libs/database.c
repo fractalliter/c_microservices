@@ -20,7 +20,7 @@ PGconn *getConnection() {
     config.host = "localhost";
     config.user = "postgres";
     config.password = "postgres";
-    config.dbname = "postgres";
+    config.dbname = "test";
     const char *port = getenv("DB_PORT");
     if(port != NULL)
         config.port = atoi(port);
@@ -45,6 +45,7 @@ PGconn *getConnection() {
                 PQerrorMessage(conn));
         close_connection(conn, 1);
     }
+    free(conn_str);
     return conn;
 }
 
