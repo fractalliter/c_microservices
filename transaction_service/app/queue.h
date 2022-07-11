@@ -11,6 +11,7 @@
 #include <string.h>
 #include <assert.h>
 
+int receive_message(int, char *, char *);
 void start_zmq();
 
 #endif //TRANSACTION_SERVICE_QUEUE_H

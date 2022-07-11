@@ -5,31 +5,11 @@
 #include "transaction.h"
 #include <zmq.h>
 
-int receive_message(int LEN, char *buffer, char *json) {
-    int size = zmq_recv (zmq_responder, buffer, LEN, 0);
-    if (size == -1){
-        return 0;
-    }
-    int i = 0;
-    while (i <= LEN+1) {
-        if(buffer[i] == '}') {
-            buffer[i+1] = '\0';
-            LEN = i+1;
-            break;
-        }
-        i+=1;
-    }
-    int j = 0;
-    while (j<=LEN) {
-        json[j] = buffer[j];
-        j+=1;
-    }
-    return LEN;
-}
+enum direction {in,out};
 
 void transaction() {
     json_value* value;
-    int LEN = 50;
+    int LEN = 1028;
     char *buffer = (char *) malloc(LEN);
     char *json = (char *) malloc(LEN);
     LEN = receive_message(LEN, buffer, json);
@@ -41,11 +21,16 @@ void transaction() {
         const char *error = "{\"error\":\"Unable to parse data\"}";
         zmq_send (zmq_responder, error, strlen(error), 0);
     }else {
-        const char *param_values[2];
-        const char *keys[] = {"user", "amount"};
-        for (int i = 0; i < 2; ++i) {
+        int param_len = 3;
+        const char *param_values[param_len];
+        const char *keys[] = {"user", "amount", "direction"};
+        for (int i = 0; i < param_len; ++i) {
             if (strncasecmp(value->u.object.values[i].name, keys[i], strlen(keys[i])) == 0) {
                 param_values[i] = value->u.object.values[i].value->u.string.ptr;
+                if(i==2 && strncasecmp(value->u.object.values[i].value->u.string.ptr, "in", strlen("in")) == 0) {
+                    param_values[i] = "1";
+                }else if(i==2 && strncasecmp(value->u.object.values[i].value->u.string.ptr, "out", strlen("out")) == 0)
+                    param_values[i]= "0";
             }
         }
         transactional(param_values);
@@ -77,9 +62,12 @@ void transactional(const char *const *param_values) {
 
     }
     if (rollback == 0) {
-        // Update user balance and subtract the withdraw amount
-        char *udt = "UPDATE account SET balance = balance - $2 WHERE user_id=$1";
-        response = PQexecParams(conn, udt, 2, NULL, param_values, NULL, NULL, 0);
+        char *udt[] = {"UPDATE account SET balance=balance-$2 WHERE user_id=$1",
+                       "UPDATE account SET balance=balance+$2 WHERE user_id=$1"};
+        if(strncasecmp(param_values[2], "0", 1)==0)
+            response = PQexecParams(conn, udt[0], 2, NULL, param_values, NULL, NULL, 0);
+        if(strncasecmp(param_values[2], "1", 1)==0)
+            response = PQexecParams(conn, udt[1], 2, NULL, param_values, NULL, NULL, 0);
         command_error_handler(conn, response);
         PQclear(response);
 
